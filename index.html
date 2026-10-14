@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Copperleaf Plumbing & Heating (Fictional Demo)</title>
+<style>
+:root{--b:#0b4f6c;--a:#f29e4c;--bg:#f5f8fa}*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;color:#1d2a33;background:var(--bg)}
+.banner{background:#fff3cd;text-align:center;padding:8px;font-size:14px;border-bottom:1px solid #e8d48b}
+header{background:var(--b);color:#fff;padding:48px 20px;text-align:center}header h1{margin:0 0 8px;font-size:2.2rem}header p{margin:0;opacity:.9}
+.badge{display:inline-block;margin-top:16px;background:var(--a);color:#222;padding:6px 14px;border-radius:20px;font-weight:600}
+main{max-width:1100px;margin:auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}@media(max-width:800px){main{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:14px}input,select,textarea{width:100%;padding:10px;border:1px solid #c6d3db;border-radius:8px;font:inherit}
+button{margin-top:16px;width:100%;padding:12px;background:var(--a);border:0;border-radius:8px;font-weight:700;font-size:16px;cursor:pointer}
+.row{display:flex;gap:10px}.row>div{flex:1}.chk{display:flex;gap:8px;align-items:center;font-weight:400}.chk input{width:auto}
+.msg{border-left:4px solid var(--b);background:#eef5f8;padding:14px;border-radius:6px;margin-top:12px;white-space:pre-wrap;font-size:14px}
+.msg.urgent{border-color:#c0392b;background:#fdecea}.meta{font-size:12px;color:#5b6b75;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #e3eaee;padding:6px;text-align:left}
+.pill{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}.EMERGENCY{background:#c0392b;color:#fff}.QUOTE{background:#2e86de;color:#fff}.BOOKING{background:#27ae60;color:#fff}
+.stats{display:flex;gap:12px;margin-bottom:12px}.stats div{flex:1;background:var(--bg);border-radius:8px;padding:10px;text-align:center}.stats b{display:block;font-size:1.4rem;color:var(--b)}
+footer{text-align:center;padding:24px;font-size:13px;color:#5b6b75}
+</style></head><body>
+<div class="banner">⚠️ <b>Demonstration only.</b> Copperleaf Plumbing & Heating is a fictional business. No enquiries are sent anywhere; all data stays in your browser.</div>
+<header><h1>Copperleaf Plumbing & Heating</h1><p>Leaks, boilers, bathrooms. Serving the fictional town of Ashbridge.</p><span class="badge">⚡ Every enquiry answered in seconds, 24/7</span></header>
+<main>
+<section class="card"><h2>Request a quote or booking</h2>
+<form id="f">
+<div class="row"><div><label>Name</label><input id="name" required placeholder="Jane Smith"></div><div><label>Phone</label><input id="phone" required placeholder="07700 900123"></div></div>
+<label>Email</label><input id="email" type="email" placeholder="jane@example.com">
+<div class="row"><div><label>Postcode</label><input id="pc" placeholder="AB1 2CD"></div><div><label>Job type</label><select id="job">
+<option>Leak / burst pipe</option><option>No heating / hot water</option><option>Boiler service</option><option>Blocked drain / toilet</option><option>Bathroom or kitchen fit</option><option>Tap / radiator repair</option><option>Other</option></select></div></div>
+<label>Describe the problem</label><textarea id="desc" rows="3" placeholder="e.g. Water leaking under the kitchen sink"></textarea>
+<div class="row"><div><label>Preferred day</label><input id="day" type="date"></div><div><label>Time</label><select id="slot"><option>Morning (8–12)</option><option>Afternoon (12–5)</option><option>Any time</option></select></div></div>
+<label>Simulate enquiry time</label><select id="sim"><option value="now">Use current time</option><option value="day">Weekday 11:00 (open)</option><option value="night">Saturday 23:40 (after hours)</option></select>
+<label class="chk"><input type="checkbox" id="gdpr" required> I agree to Copperleaf contacting me about this enquiry (demo).</label>
+<button>Send enquiry</button></form>
+<div id="out"></div></section>
+<section class="card"><h2>Owner's dashboard (live demo)</h2>
+<div class="stats"><div><b id="sN">0</b>enquiries</div><div><b id="sR">–</b>avg reply time</div><div><b id="sE">0</b>escalated</div></div>
+<table><thead><tr><th>Time</th><th>Customer</th><th>Type</th><th>Status</th></tr></thead><tbody id="tb"><tr><td colspan="4">No enquiries yet. Try the form.</td></tr></tbody></table>
+<h3>How it works</h3><ol style="font-size:14px;line-height:1.6">
+<li>Customer submits the form (or emails or messages).</li><li>Instant, personalised reply confirms the details and next step.</li>
+<li>Urgent keywords (leak, flood, gas, no heating) are <b>escalated to a human</b> straight away. Gas smells go straight to the National Gas Emergency number.</li>
+<li>After hours: the customer gets a clear auto-response and a callback slot for the morning.</li><li>Every lead is logged so nothing slips through.</li></ol></section>
+</main>
+<footer>Demo built to show automated enquiry handling for UK trades. Fictional business, test data only.</footer>
+<script>
+const L=[];const $=id=>document.getElementById(id);
+function isOpen(d){const h=d.getHours(),w=d.getDay();return w>=1&&w<=5?h>=8&&h<18:w==6?h>=9&&h<13:false}
+$('f').onsubmit=e=>{e.preventDefault();const t0=performance.now();
+let d=new Date();const s=$('sim').value;if(s=='day'){d.setDate(d.getDate()+((1-d.getDay()+7)%7||7));d.setHours(11,0)}if(s=='night'){d.setDate(d.getDate()+((6-d.getDay()+7)%7));d.setHours(23,40)}
+const n=$('name').value.trim().split(' ')[0],job=$('job').value,desc=$('desc').value.toLowerCase(),all=(job+' '+desc).toLowerCase();
+const gas=/gas|smell/.test(desc);const urgent=gas||/leak|burst|flood|no heating|no hot water|water everywhere|ceiling/.test(all);
+const quote=/fit|bathroom|kitchen|install|new boiler|quote/.test(all);const type=urgent?'EMERGENCY':quote?'QUOTE':'BOOKING';
+const open=isOpen(d);const ref='CL-'+Math.floor(1000+Math.random()*9000);let body;
+if(gas)body=`Hi ${n}, if you can smell gas, please leave the property, don't use switches or flames, and call the National Gas Emergency Service on 0800 111 999 now. We've also flagged your enquiry to our engineer.`;
+else if(urgent)body=`Hi ${n}, thanks for contacting Copperleaf (ref ${ref}). This looks urgent (${job.toLowerCase()}), so we've alerted our on-call engineer, who will phone you on ${$('phone').value} within 15 minutes.${/leak|burst|flood/.test(all)?'\n\nIn the meantime: turn off your stopcock (usually under the kitchen sink) and switch off electrics near any water.':''}`;
+else if(quote)body=`Hi ${n}, thanks for your quote request (ref ${ref}) for ${job.toLowerCase()}. To price it accurately, could you reply with a couple of photos and rough room dimensions? ${open?'We will ring you today to arrange a free survey.':'We will ring you on our next working morning to book a free survey.'}`;
+else body=`Hi ${n}, thanks for booking with Copperleaf (ref ${ref}). We've pencilled you in for ${$('day').value||'the next available day'}, ${$('slot').value.toLowerCase()}. ${open?'The office will confirm your exact slot within the hour.':'We will confirm your exact slot first thing tomorrow.'}`;
+if(!open&&!gas)body=`🌙 Our office is closed right now (Mon–Fri 8–6, Sat 9–1), but your message has arrived safely.\n\n`+body;
+body+=`\n\nCopperleaf Plumbing & Heating (fictional demo)`;
+setTimeout(()=>{const ms=Math.round(performance.now()-t0);
+$('out').innerHTML=`<div class="msg ${urgent?'urgent':''}"><div class="meta">Auto-reply sent by SMS/email in ${(ms/1000).toFixed(1)}s · ${d.toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'})}${urgent?' · 🚨 escalated to engineer':''}</div>${body.replace(/</g,'&lt;')}</div>`;
+L.unshift({t:d.toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'}),n:$('name').value,type,st:urgent?'Escalated to human':open?'Replied, awaiting call':'Replied, after hours',ms});
+$('tb').innerHTML=L.map(x=>`<tr><td>${x.t}</td><td>${x.n.replace(/</g,'&lt;')}</td><td><span class="pill ${x.type}">${x.type}</span></td><td>${x.st}</td></tr>`).join('');
+$('sN').textContent=L.length;$('sR').textContent=(L.reduce((a,x)=>a+x.ms,0)/L.length/1000).toFixed(1)+'s';$('sE').textContent=L.filter(x=>x.type=='EMERGENCY').length;},900+Math.random()*600)};
+</script></body></html>
